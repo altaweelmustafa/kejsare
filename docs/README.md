@@ -5,17 +5,12 @@ But I'm going to go through all the steps (fundamentally, programmaticly, etc) t
 
 ---
 
-```toc
-```
-
----
-
 # Engine Architecture
 
 Before going into coding stuff, let's understand the data flow:
 
 
-![[engine_arch.png]]
+![engine](imgs/engine_arch.png)
 
 > Each one of these components is a distinct responsibility, so each gets its own Go `package`
 
@@ -26,10 +21,10 @@ The board is the single source of truth. It answers: *what pieces are where, who
 
 We represent it using **bitboards**. A chessboard has 64 squares, a `uint64` has 64 bits, perfect fit. Each bit being `1` means a piece of that type occupies that square.
 
-![[bitboard_mental_model.png]]
+![board](imgs/bitboard_mental_model.png)
 
 The board state is loaded from a **FEN string**: a standard notation that encodes the full game state in one line:
-![[FEN_String.png]]
+![FEN](imgs/FEN_String.png)
 
 ---
 
@@ -47,7 +42,7 @@ Before generating moves, we need to define what a move **is**. Every move needs 
 
 Here's our bit layout:
 
-![[bit-layout.png]]
+![bit_layout](imgs/bit-layout.png)
 
 **Flags:**
 ```
@@ -129,7 +124,7 @@ For each direction, shift the piece bitboard repeatedly until we hit the edge or
 
 To produce a filter that generate a **legal set of moves,** where it consider our king possible check:
 
-![[legality_flowchart.png]]
+![legality](imgs/legality_flowchart.png)
 
 ---
 
@@ -142,7 +137,7 @@ The evaluator scores a position from white's perspective.
 
 Let's begin with just simple material count. We count pieces and multiply them by their ***centipawns*** value:
 
-![[evaluation.png]]
+![eval](imgs/evaluation.png)
 
 
 ---
@@ -154,6 +149,6 @@ Search is the brain of the engine. Everything we've built so far feeds into this
 ### How Search Works
 
 We explore the game tree recursively. White picks the move that leads to the highest score, black picks the move that leads to the lowest. This is ***Minimax***:*
-![[minmax.png]]
+![minimax](imgs/minmax.png)
 
 
